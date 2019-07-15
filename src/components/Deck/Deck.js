@@ -9,11 +9,11 @@ class Deck extends Component {
 
 
   state = {
-    cards:[{icon:"fa-diamond", open:false, locked: false},
-            {icon:"fa-reddit", open:false, locked: false},
-            {icon:"fa-birthday-cake", open:false, locked: false},
-            {icon:"fa-diamond", open:false, locked: false}],      
-      
+    cards:[{icon:"fa-diamond", open:false, match: false},
+            {icon:"fa-reddit", open:false, match: false},
+            {icon:"fa-birthday-cake", open:false, match: false},
+            {icon:"fa-diamond", open:false, match: false}],      
+    deckLocked: false  
   }
 
   cardsIconOption = ["fa-diamond", "fa-paper-plane-o", "fa-anchor", "fa-bolt", "fa-cube", "fa-leaf", "fa-bicycle", 
@@ -22,79 +22,109 @@ class Deck extends Component {
 
   componentDidMount(){
 
+  }
 
+  componentDidUpdate(){
+    console.log(this.state);
   }
 
 
-  // onCardOpened(){
-  //   this.setState((previousState)=>{
-  //     previousState.cardOpened =!previousState.cardOpened
-  //     console.log("onCardOpened working")
-  //     return previousState
+  // lockingCard(array){
+  //   // this.setState((previouState)=>{
+      
+  //   //   return previouState
+  //   // })
+  //   array.forEach((card) => {
+  //     if(!card.match){
+  //       card.locked =!card.locked
+  //     }
   //   })
-    
   // }
-  
+
+  matchCards(array){
+    this.setState((previouState)=>{
+      array.map((card) => {
+        card.open = true
+        card.match = true
+        return card
+      })
+    })
+  }
+
+  closingCard(array){
+    this.setState((previouState)=>{
+      array.forEach((card)=>{
+        if(card.open && !card.match){
+          card.open = false
+        } 
+      })
+      return array
+    })
+  }
+
+  lockingDeck(){
+    this.setState((previousState)=>{
+      previousState.deckLocked = !previousState.deckLocked
+    })
+  }
+
+  // quero que trave a carta após ser clicada até a outra fechar e ainda não sei como fazer
 
   onCardOpened(){
-    let cardsOpened = this.state.cards.filter(card => card.open)
-    console.log(cardsOpened)
+
+    let cardsOpened = this.state.cards.filter((card) => {return card.open && !card.match})
+
+    if(cardsOpened.length>0){
+      this.setState((previousState)=>{
+        cardsOpened.forEach((card)=>{
+          card.open = true
+        })
+      })
+    }   
 
     if(cardsOpened.length === 2){
+
       if(cardsOpened[0].icon === cardsOpened[1].icon){
-        this.lockCard()
-      } else {
+        this.matchCards([cardsOpened[0], cardsOpened[1]])
+        console.log(cardsOpened)
+      } 
+      else { 
         let intervalId;
+        this.setState((previousState)=>{
+          previousState.deckLocked = true
+         })
+
         intervalId = setInterval(()=>{
           clearInterval(intervalId);
-          console.log("oi")
+          console.log(cardsOpened[0].icon, cardsOpened[1].icon)
+          this.closingCard(cardsOpened)
+
           this.setState((previousState)=>{
-            previousState.cards.forEach((card)=>{
-              if(card.open){
-                card.open = !card.open
-              }
-              
-            })
-            return previousState
-          })
+            previousState.deckLocked = false
+           })
           
         }, 3000)
+        
       }
     }
   }
-
-  lockCard(){
-
-    this.setState((previousState)=>{
-      previousState.cards.map((card)=>{
-        card.locked = true
-        card.onclick = null
-
-      })
-      
-      return previousState
-    })
-  }
  
   onCardCliked(event){
-    console.log(event)
-    console.log(event.currentTarget.getAttribute("identifier"))
     let index = event.currentTarget.getAttribute("identifier")
+
+    if(this.state.cards[index].open || this.state.deckLocked){
+      return
+    }
+    
     this.setState((previousState)=>{
       previousState.cards[index].open = !previousState.cards[index].open
       return previousState
     })
-
-    // gambiarra
+      // gambiarra
     this.setState((previousState)=>{
       this.onCardOpened();
       return previousState
     })
-    
-    
-
-
-    // this.setState(()=>{})
   }
   
 
@@ -114,7 +144,7 @@ class Deck extends Component {
                 <Card2 
                   cardOpened = {card.open}
                   cardIcon = {card.icon} 
-                  cardLocked = {card.locked}
+                  cardMatch = {card.match}
     
                   
                   >
@@ -124,12 +154,7 @@ class Deck extends Component {
           }
           
         </ul>
-        
-        
-      
-        
-      
-       
+  
 
       </div>
 
