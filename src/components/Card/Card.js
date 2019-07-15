@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import './Card.css';
 import PropTypes from 'prop-types'
+import Deck from '../Deck/Deck';
 
-let openClass =" oi"
 
 class Card extends Component{
 
@@ -26,33 +26,58 @@ class Card extends Component{
   }
 
   checkCard(){
-    this.setState((previousState)=>{
-      if(this.props.cardOpened){
-        previousState.class = `${previousState.class} open `
-      } else {
-        previousState.class = `${previousState.class} close `
-      }
-      return previousState.class
-    }) 
+    
+    if(this.props.cardOpened){
+      return "open"
+    } else {
+      return "close"
+    }     
   }
 
-  getClass(){
-    this.checkCard()
-  }
+  // checkCard(){
+  //   this.setState((previousState)=>{
+  //     if(this.props.cardOpened){
+  //       previousState.class = `${previousState.class} open `
+  //     } else {
+  //       previousState.class = `${previousState.class} close `
+  //     }
+  //     return previousState
+  //   }) 
+  // }
 
+  // getClass(elem){
+  //   this.setState((previousState)=>{
+  //     previousState.class =  `${previousState.class} ${elem} `
+  //     return previousState
+  //   })
+  // }
+
+  // creatingCard(){
+  //   let qty = this.state.cardQuantity
+  //   let icons = this.state.icons
+
+    
+  //   for (let i = qty; i/2<= icons.length; i--){
+  //     <li className={`${this.state.class} ${this.checkCard()} ${icons[i]}`} key= {`${icons[i]}`} onClick={this.props.onCardClicked}></li>  
+  //   }
+  //   return
+  // }
+
+ 
  
 
   render(){
 
     let icons = this.state.icons;
-    let cardClassname = "card fa "
 
     return(
       <div>
         <ul className="deck">
+          {/* {this.creatingCard()} */}
+
 
           {icons.map((icon)=>( 
-            <li className={cardClassname + icon} onClick={this.props.onCardClicked}></li>  
+            <li className={`${this.state.class} ${this.checkCard()} ${icon}`} key= {`${icon}`} onClick={this.props.onCardClicked}></li>  
           ))
           }
         </ul>
