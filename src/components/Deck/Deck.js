@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import './Deck.css';
 import PropTypes from 'prop-types'
 import Card2 from '../Card2/Card2'
+import Timer from '../Timer/Timer'
 
 class Deck extends Component {
 
@@ -9,6 +10,7 @@ class Deck extends Component {
     cards:[],      
     deckLocked: false,  
     cardQuantity: 6,
+    gameStart: false
   }
 
   componentDidMount(){
@@ -79,13 +81,15 @@ class Deck extends Component {
   }
 
   updateCards(previousState){
-
+    if(!previousState.gameStart){
+        previousState.gameStart = true
+      } 
     let cardsOpened = this.state.cards.filter((card) => {return card.open && !card.match})
 
     if(cardsOpened.length>0){
       cardsOpened.forEach((card)=>{
         card.open = true
-      })
+      }) 
     }   
 
     if(cardsOpened.length === 2){
@@ -114,10 +118,17 @@ class Deck extends Component {
         }, 1000)
       }
     }
+
+
+    let allCardsMatch = this.state.cards.every((card)=>card.match)
+    if( allCardsMatch){
+      previousState.gameStart = false
+    }
   }
  
   onCardCliked(event){
     let index = event.currentTarget.getAttribute("identifier")
+
     // Locking Deck
     if(this.state.cards[index].open || this.state.deckLocked){
       return
@@ -127,6 +138,8 @@ class Deck extends Component {
       previousState.cards[index].open = !previousState.cards[index].open
       return previousState
     })
+
+
     // gambiarra
     this.setState((previousState)=>{
       this.updateCards(previousState);
@@ -139,6 +152,11 @@ class Deck extends Component {
 
     return(
       <div className="container">
+        <div className="row">
+          <Timer 
+            startStop= {this.state.gameStart}>
+          </Timer>
+        </div>
         <ul className="deck">
 
           {
