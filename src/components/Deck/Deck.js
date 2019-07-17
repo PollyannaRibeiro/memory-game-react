@@ -7,6 +7,7 @@ class Deck extends Component {
 
   state = {
     cards:[],      
+    deckLocked: false,  
     cardQuantity: 6,
   }
 
@@ -60,84 +61,79 @@ class Deck extends Component {
       return previousState
     })
   }
-
+  
+  // match cards 
+  matchCards(array){
+    array.forEach((card) => {
+      card.open = true
+      card.match = true
+    })
+  }
+  //closing cards
   closingCard(array){
-    this.setState((previouState)=>{
-      array.forEach((card)=>{
-        if(card.open && !card.match){
-          card.open = false
-        } 
-      })
-      return array
+    array.forEach((card)=>{
+      if(card.open && !card.match){
+        card.open = false
+      } 
     })
   }
 
-  lockingDeck(){
-    this.setState((previousState)=>{
-      previousState.deckLocked = !previousState.deckLocked
-    })
-  }
-
-  // quero que trave a carta após ser clicada até a outra fechar e ainda não sei como fazer
-
-  onCardOpened(){
+  updateCards(previousState){
 
     let cardsOpened = this.state.cards.filter((card) => {return card.open && !card.match})
 
     if(cardsOpened.length>0){
-      this.setState((previousState)=>{
-        cardsOpened.forEach((card)=>{
-          card.open = true
-        })
+      cardsOpened.forEach((card)=>{
+        card.open = true
       })
     }   
 
     if(cardsOpened.length === 2){
-
+      // comparing 2 cards
       if(cardsOpened[0].icon === cardsOpened[1].icon){
         this.matchCards([cardsOpened[0], cardsOpened[1]])
-        console.log(cardsOpened)
-      } 
-      else { 
+      } else { 
         let intervalId;
-        this.setState((previousState)=>{
-          previousState.deckLocked = true
-         })
+        previousState.deckLocked = true
+        cardsOpened.forEach((card)=>{
+          card.error = true
+        })
 
         intervalId = setInterval(()=>{
           clearInterval(intervalId);
-          console.log(cardsOpened[0].icon, cardsOpened[1].icon)
-          this.closingCard(cardsOpened)
-
           this.setState((previousState)=>{
+            console.log(JSON.stringify(cardsOpened))
+            this.closingCard(cardsOpened)
+            console.log(JSON.stringify(cardsOpened))
             previousState.deckLocked = false
+            cardsOpened.forEach((card)=>{
+              card.error = false
+            })
+            return previousState;
            })
-          
-        }, 3000)
-        
+        }, 1000)
       }
     }
   }
  
   onCardCliked(event){
     let index = event.currentTarget.getAttribute("identifier")
-
+    // Locking Deck
     if(this.state.cards[index].open || this.state.deckLocked){
       return
     }
-    
+    // closing card
     this.setState((previousState)=>{
       previousState.cards[index].open = !previousState.cards[index].open
       return previousState
     })
-      // gambiarra
+    // gambiarra
     this.setState((previousState)=>{
-      this.onCardOpened();
+      this.updateCards(previousState);
       return previousState
     })
   }
   
-
   render(){
     let cards = this.state.cards;
 
@@ -155,17 +151,13 @@ class Deck extends Component {
                   cardOpened = {card.open}
                   cardIcon = {card.icon} 
                   cardMatch = {card.match}
-    
-                  
+                  cardError = {card.error}
                   >
                 </Card2>
                 </li>
             ))
           }
-          
         </ul>
-  
-
       </div>
 
     )
