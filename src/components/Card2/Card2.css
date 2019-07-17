@@ -1,31 +1,6 @@
-colour-div{
-  background-color: red;
-  width: 100%;
-}
-
-.deck {
-  width: 70%;
-  min-height: 680px;
-  background: linear-gradient(160deg, #02ccba 0%, #aa7ecd 100%);
-  padding: 32px;
-  border-radius: 10px;
-  box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  margin-left: 15%;
-  
-}
-
-.deck li{
-  list-style: none;
-}
-
 .card {
   height: 125px;
   width: 125px;
-  margin: 10px;
   background: #2e3d49;
   font-size: 0;
   color: #ffffff;
@@ -40,13 +15,23 @@ colour-div{
   transform: rotateY(180deg);
 }
 
-.deck .card.show {
-  
-}
-
-.card.open {
+.open {
   transform: rotateY(0deg);
   background: #02b3e4;
   cursor: default;
-  font-size: 33px!important;
+  font-size: 33px; 
+}
+
+.card.match {
+  cursor: default!important;
+  background: #02ccba!important;
+  animation-delay: 2s!important;
+  animation: shake 0.5s!important;
+  transition-timing-function: cubic-bezier(0.64, 0.57, 0.67, 1.53);
+}
+
+.card.error{
+  transition: background-color 0.5s ease!important;
+  background-color: rgba(255, 121, 43, 0.822)!important;
+  animation: shake-error 0.5s!important;
 }
