@@ -8,7 +8,7 @@ class Card2 extends Component{
   static propTypes = {
     cardOpened: PropTypes.bool.isRequired,
     cardMatch: PropTypes.bool.isRequired,
-    cardIcon: PropTypes.string.isRequired
+    cardIcon: PropTypes.string.isRequired,
   }
 
   render(){

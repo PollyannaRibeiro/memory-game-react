@@ -1,53 +1,63 @@
 import React, {Component} from 'react';
 import './Deck.css';
-import Card from '../Card/Card';
 import PropTypes from 'prop-types'
 import Card2 from '../Card2/Card2'
 
 class Deck extends Component {
 
-
-
   state = {
-    cards:[{icon:"fa-diamond", open:false, match: false},
-            {icon:"fa-reddit", open:false, match: false},
-            {icon:"fa-birthday-cake", open:false, match: false},
-            {icon:"fa-diamond", open:false, match: false}],      
-    deckLocked: false  
+    cards:[],      
+    cardQuantity: 6,
   }
-
-  cardsIconOption = ["fa-diamond", "fa-paper-plane-o", "fa-anchor", "fa-bolt", "fa-cube", "fa-leaf", "fa-bicycle", 
-  "fa-bomb", "fa-paw", "fa-reddit", "fa-institution", "fa-birthday-cake", "fa-cab", "fa-ambulance", 
-  "fa-apple", "fa-bell"]
 
   componentDidMount(){
-
+    this.setupDeck()
   }
 
-  componentDidUpdate(){
-    console.log(this.state);
-  }
+  setupDeck(){
+    let cardsIconOption = ["fa-diamond", "fa-paper-plane-o", "fa-anchor", "fa-bolt", "fa-cube", "fa-leaf", "fa-bicycle", 
+        "fa-bomb", "fa-paw", "fa-reddit", "fa-institution", "fa-birthday-cake", "fa-cab", "fa-ambulance", 
+        "fa-apple", "fa-bell", "fa-sun-o", "fa-moon-o"]
 
+    let iconsNeeded = this.state.cardQuantity/2
+    let cardsIcons = []
+    for(var i = 0; i<iconsNeeded; i++){
+      cardsIcons.push(cardsIconOption[i])
+      cardsIcons.push(cardsIconOption[i])
+    }
 
-  // lockingCard(array){
-  //   // this.setState((previouState)=>{
-      
-  //   //   return previouState
-  //   // })
-  //   array.forEach((card) => {
-  //     if(!card.match){
-  //       card.locked =!card.locked
-  //     }
-  //   })
-  // }
+    // shuffle array of icons
 
-  matchCards(array){
-    this.setState((previouState)=>{
-      array.map((card) => {
-        card.open = true
-        card.match = true
-        return card
-      })
+    function shuffle(array) {
+      var i = array.length,
+          j = 0,
+          temp;
+  
+      while (i--) {
+          j = Math.floor(Math.random() * (i+1));
+          // swap randomly chosen element with current element
+          temp = array[i];
+          array[i] = array[j];
+          array[j] = temp;
+      }
+      return array;
+    }
+  
+    cardsIcons = shuffle(cardsIcons)
+
+    //defing cards on the deck
+    let cardOnDeck = []
+
+    function definingCardDeck(){
+      for (let i =0; i< cardsIcons.length; i++){
+        cardOnDeck.push({icon:`${cardsIcons[i]}`, open: false, match: false, error: false})
+      }
+    }
+    definingCardDeck()
+
+    this.setState((previousState)=>{
+      previousState.cards = cardOnDeck
+      return previousState
     })
   }
 
