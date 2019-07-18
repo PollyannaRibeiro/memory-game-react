@@ -1,0 +1,29 @@
+/*  Styles for the Score Panel  */
+
+.row {
+  text-align: center;
+  width: 70vw;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.stars {
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  margin: 0 5px 0 0;
+}
+
+.row .moves {
+  padding-left: 1em;
+}
+
+.stars li {
+  list-style: none;
+  display: inline-block;
+}
+
+.restart {
+  float: right;
+  cursor: pointer;
+}

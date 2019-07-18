@@ -3,6 +3,7 @@ import './Deck.css';
 import PropTypes from 'prop-types'
 import Card2 from '../Card2/Card2'
 import Timer from '../Timer/Timer'
+import Score from '../Score/Score'
 import Moves from '../Moves/Moves'
 
 class Deck extends Component {
@@ -11,7 +12,6 @@ class Deck extends Component {
     cards:[],      
     deckLocked: false,  
     cardQuantity: 6,
-    gameStart: false
     gameStart: false,
     movements:0
   }
@@ -158,7 +158,9 @@ class Deck extends Component {
 
     return(
       <div className="container">
-        <div className="row">
+        <div className="row score-painel">
+          <Score
+            movements= {this.state.movements}></Score>
           <Moves
             movements={this.state.movements}></Moves>
           <Timer 
