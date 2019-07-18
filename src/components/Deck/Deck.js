@@ -3,6 +3,7 @@ import './Deck.css';
 import PropTypes from 'prop-types'
 import Card2 from '../Card2/Card2'
 import Timer from '../Timer/Timer'
+import Moves from '../Moves/Moves'
 
 class Deck extends Component {
 
@@ -11,6 +12,8 @@ class Deck extends Component {
     deckLocked: false,  
     cardQuantity: 6,
     gameStart: false
+    gameStart: false,
+    movements:0
   }
 
   componentDidMount(){
@@ -84,6 +87,11 @@ class Deck extends Component {
     if(!previousState.gameStart){
         previousState.gameStart = true
       } 
+
+    // counting the movements   
+    previousState.movements++
+  
+
     let cardsOpened = this.state.cards.filter((card) => {return card.open && !card.match})
 
     if(cardsOpened.length>0){
@@ -106,9 +114,7 @@ class Deck extends Component {
         intervalId = setInterval(()=>{
           clearInterval(intervalId);
           this.setState((previousState)=>{
-            console.log(JSON.stringify(cardsOpened))
             this.closingCard(cardsOpened)
-            console.log(JSON.stringify(cardsOpened))
             previousState.deckLocked = false
             cardsOpened.forEach((card)=>{
               card.error = false
@@ -153,6 +159,8 @@ class Deck extends Component {
     return(
       <div className="container">
         <div className="row">
+          <Moves
+            movements={this.state.movements}></Moves>
           <Timer 
             startStop= {this.state.gameStart}>
           </Timer>

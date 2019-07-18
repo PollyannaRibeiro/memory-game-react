@@ -42,14 +42,13 @@ class Timer extends Component{
     }, 1000);   
 }
 
-render(){
+  render(){
 
-  let finalTime = this.state.timeCounter
-  return (
-    <span id="timer">{`Timer: ${finalTime}`}</span>
-  )
-}
-
+    let finalTime = this.state.timeCounter
+    return (
+      <span id="timer">{`Timer: ${finalTime}`}</span>
+    )
+  }
 }
 
 export default Timer
