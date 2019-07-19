@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import './Deck.css';
-import PropTypes from 'prop-types'
 import Card2 from '../Card2/Card2'
-import Timer from '../Timer/Timer'
+import Timer, {TimerState} from '../Timer/Timer'
 import Score from '../Score/Score'
 import Moves from '../Moves/Moves'
+import StateReset from '../StateReset/StateReset'
 
 class Deck extends Component {
 
@@ -12,8 +12,8 @@ class Deck extends Component {
     cards:[],      
     deckLocked: false,  
     cardQuantity: 6,
-    gameStart: false,
-    movements:0
+    gameState: TimerState.Initial,
+    movements:0,
   }
 
   componentDidMount(){
@@ -21,6 +21,7 @@ class Deck extends Component {
   }
 
   setupDeck(){
+
     let cardsIconOption = ["fa-diamond", "fa-paper-plane-o", "fa-anchor", "fa-bolt", "fa-cube", "fa-leaf", "fa-bicycle", 
         "fa-bomb", "fa-paw", "fa-reddit", "fa-institution", "fa-birthday-cake", "fa-cab", "fa-ambulance", 
         "fa-apple", "fa-bell", "fa-sun-o", "fa-moon-o"]
@@ -84,13 +85,12 @@ class Deck extends Component {
   }
 
   updateCards(previousState){
-    if(!previousState.gameStart){
-        previousState.gameStart = true
+    if(previousState.gameState === TimerState.Initial){
+        previousState.gameState = TimerState.Stated
       } 
 
     // counting the movements   
     previousState.movements++
-  
 
     let cardsOpened = this.state.cards.filter((card) => {return card.open && !card.match})
 
@@ -125,10 +125,9 @@ class Deck extends Component {
       }
     }
 
-
     let allCardsMatch = this.state.cards.every((card)=>card.match)
     if( allCardsMatch){
-      previousState.gameStart = false
+      previousState.gameState = TimerState.Ended
     }
   }
  
@@ -144,11 +143,21 @@ class Deck extends Component {
       previousState.cards[index].open = !previousState.cards[index].open
       return previousState
     })
-
-
     // gambiarra
     this.setState((previousState)=>{
       this.updateCards(previousState);
+      return previousState
+    })
+  }
+
+  onResetClicker(){
+    console.log("dfgh ")
+    this.setupDeck()
+    this.setState((previousState)=>{
+      previousState.deckLocked = false
+      previousState.gameState = TimerState.Initial
+      previousState.movements = 0
+      previousState.resetClicked = false
       return previousState
     })
   }
@@ -157,36 +166,43 @@ class Deck extends Component {
     let cards = this.state.cards;
 
     return(
+  
       <div className="container">
-        <div className="row score-painel">
-          <Score
-            movements= {this.state.movements}></Score>
-          <Moves
-            movements={this.state.movements}></Moves>
-          <Timer 
-            startStop= {this.state.gameStart}>
-          </Timer>
-        </div>
-        <ul className="deck">
-
-          {
-            cards.map((card, index)=>(
-              
-              <li key = {index} identifier={index}
-                  onClick={this.onCardCliked.bind(this)}
-                  >
-                <Card2 
-                  cardOpened = {card.open}
-                  cardIcon = {card.icon} 
-                  cardMatch = {card.match}
-                  cardError = {card.error}
-                  >
-                </Card2>
+        <div className="game">
+          <div><h1>Memory Game</h1></div>
+          <div className="row score-painel">
+            <Score
+              movements= {this.state.movements}></Score>
+            <Moves
+              movements={this.state.movements}></Moves>
+            <Timer 
+              state= {this.state.gameState}>
+            </Timer>
+            <div
+              onClick={this.onResetClicker.bind(this)}
+            >
+              <StateReset></StateReset>
+            </div>
+          </div>
+          <ul className="deck">
+            {
+              cards.map((card, index)=>(
+                
+                <li key = {index} identifier={index}
+                    onClick={this.onCardCliked.bind(this)}
+                    >
+                  <Card2 
+                    cardOpened = {card.open}
+                    cardIcon = {card.icon} 
+                    cardMatch = {card.match}
+                    cardError = {card.error}
+                    >
+                  </Card2>
                 </li>
-            ))
-          }
-        </ul>
-      </div>
+              ))
+            }
+          </ul>
+        </div>
 
     )
   }

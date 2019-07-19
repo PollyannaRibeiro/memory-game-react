@@ -1,5 +1,3 @@
-/*  Styles for the Score Panel  */
-
 .row {
   text-align: center;
   width: 70vw;
@@ -21,9 +19,4 @@
 .stars li {
   list-style: none;
   display: inline-block;
-}
-
-.restart {
-  float: right;
-  cursor: pointer;
 }

@@ -44,10 +44,10 @@ class Score extends Component{
         <ul className="stars">
           {
             stars.map((icon, index)=>(
-              <li><i className={`fa ${icon}`} key= {`star${index}`}></i></li>
+              <li className={`fa ${icon}`} key= {`star${index}`}></li>
             ))
           }
-        	</ul>
+        </ul>
       </span>
     )
   }

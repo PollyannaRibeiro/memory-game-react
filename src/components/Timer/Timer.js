@@ -2,9 +2,15 @@ import React, {Component} from 'react';
 import './Timer.css';
 import PropTypes from 'prop-types'
 
+export const TimerState = {
+  Initial: 'Initial',
+  Stated: 'Stated',
+  Ended: 'Ended'
+}
+
 class Timer extends Component{
   static propTypes = {
-    startStop: PropTypes.bool.isRequired,
+    state: PropTypes.oneOf(Object.keys(TimerState)).isRequired
   }
 
   state = {
@@ -15,13 +21,23 @@ class Timer extends Component{
   interval;
 
   componentDidUpdate(prevProps) {
-    // Typical usage (don't forget to compare props):
-    if (this.props.startStop !== prevProps.startStop) {
-      if(this.props.startStop){
-        this.setupTimer()
-      } else{
-        clearInterval(this.interval)
-      }
+
+    if (prevProps.state === this.props.state) {
+      return;
+    }
+
+    console.log(this.props.state)
+
+    if (this.props.state === TimerState.Initial) {
+      this.setState((previousState)=>{
+        previousState.timeCounter = 0
+        return previousState
+      })
+      clearInterval(this.interval)
+    } else if (this.props.state === TimerState.Stated) {
+      this.setupTimer()
+    } else if (this.props.state === TimerState.Ended) {
+      clearInterval(this.interval)
     }
   } 
 
